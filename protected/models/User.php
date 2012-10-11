@@ -9,7 +9,6 @@
  * @property string $username the user's handle name.
  * @property string $fullName user's full name.
  * @property string $email user's email address.
- * @property string $password user's hashed password.
  * @property string $createdTime time when user's record is created.
  * @property string $updatedTime time when user's record is updated.
  * @property boolean $isRemoved whether user's record is flagged as removed.
