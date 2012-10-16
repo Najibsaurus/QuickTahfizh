@@ -17,6 +17,7 @@ class m121011_003849_create_identity_field_move_password_to_identity_field exten
 				'Primary Key(`uid`,`accid`,`type`)'
 			));
 			$this->dropColumn("Users", 'password');
+			$this->addColumn("Users", 'salt', 'VARCHAR(120) NOT NULL');
 			$trans->commit();
 		}
 		catch (Exception $e)
@@ -30,6 +31,7 @@ class m121011_003849_create_identity_field_move_password_to_identity_field exten
 	{
 		$this->dropTable('Identity');
 		$this->addColumn("Users", 'password', 'VARCHAR(40) NOT NULL');
+		$this->dropColumn("Users");
 	}
 	/*
 	  // Use safeUp/safeDown to do migration with transaction
