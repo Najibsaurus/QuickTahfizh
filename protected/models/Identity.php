@@ -45,7 +45,7 @@ class Identity extends \CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('uid, type, validationData', 'required'),
+			array('uid, type, validationData, salt', 'required'),
 			array('type', 'numerical', 'integerOnly'=>true),
 			array('uid, accid', 'length', 'max'=>20),
 			array('validationData', 'length', 'max'=>40),

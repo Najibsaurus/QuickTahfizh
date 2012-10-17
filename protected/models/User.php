@@ -21,6 +21,7 @@
 namespace application\models;
 
 use \Yii;
+use application\models\Identity;
 
 class User extends \CActiveRecord
 {
@@ -35,6 +36,9 @@ class User extends \CActiveRecord
 	/**
 	 * List of Constant for scenario
 	 */
+	/**
+	 * @return string standardInsert
+	 */
 	const SCENARIO_INSERT_STANDARD_TYPE = 'standardInsert';
 	const SCENARIO_UPDATE_PASSWORD = 'updatePassword';
 
@@ -42,13 +46,14 @@ class User extends \CActiveRecord
 	 * @var string Password for Identity 
 	 */
 	public $password;
+	public $oldPassword;
 	public $newPassword;
 
 	/**
 	 * @var string confirmation password for Identity 
 	 */
 	public $passwordRepeat;
-
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -79,7 +84,6 @@ class User extends \CActiveRecord
 			array('passwordRepeat', 'safe', 'on' => self::SCENARIO_INSERT_STANDARD_TYPE),
 			array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_INSERT_STANDARD_TYPE),
 			array('newPassword', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_UPDATE_PASSWORD),
-			array('password', 'compare', 'compareAttribute' => 'newPassword', 'operator' => '!=', 'on' => self::SCENARIO_UPDATE_PASSWORD),
 			array('username', 'length', 'max' => 64, 'min' => 5),
 			array('email', 'email'),
 		);
@@ -91,7 +95,8 @@ class User extends \CActiveRecord
 	public function relations()
 	{
 		return array(
-			'identity' => array(self::HAS_MANY, '\\application\\models\\Identity', 'uid')
+			'identity' => array(self::HAS_MANY, '\\application\\models\\Identity', 'uid'),
+			'loginIdentity' => array(self::HAS_ONE, '\\application\\models\\Identity', 'uid', 'condition' => sprintf('type= %s ', Identity::TYPE_EMAIL_LOGIN)),
 		);
 	}
 
@@ -121,7 +126,7 @@ class User extends \CActiveRecord
 								'validationData'
 							),
 							'condition' => 'type=:type',
-							'params' => array(':type' => \application\models\Identity::TYPE_EMAIL_LOGIN)
+							'params' => array(':type' => Identity::TYPE_EMAIL_LOGIN)
 						)
 					)
 				)
@@ -144,11 +149,27 @@ class User extends \CActiveRecord
 		);
 	}
 
+	/**
+	 * @return \application\models\CActiveDataProvider 
+	 */
 	public function search()
 	{
-		return new CActiveDataProvider('User');
+		return new \CActiveDataProvider($this,
+						array(
+							'criteria' => array(
+								'scopes' => array(
+									User::SCOPE_SELECT_LABELS,
+									User::SCOPE_ORDER_NEWEST,
+								)
+							),
+							'pagination' => array(),
+				));
 	}
 
+	/**
+	 * Method that called before validate object.
+	 * @return boolean 
+	 */
 	public function beforeValidate()
 	{
 		if ($this->getIsNewRecord())
@@ -158,20 +179,38 @@ class User extends \CActiveRecord
 		return parent::beforeValidate();
 	}
 
+	/**
+	 * Method that called before saving
+	 * @return boolean
+	 */
 	public function beforeSave()
 	{
-		if ($this->getScenario() === self::SCENARIO_INSERT_STANDARD_TYPE && $this->getIsNewRecord())
-		{
-			$this->password = \HHash::generatePassword($this->password);
-			$this->salt = \HHash::generateSalt();
-		}
-
-		if ($this->getScenario() === self::SCENARIO_UPDATE_PASSWORD)
-		{
-			$this->password = \HHash::generatePassword($this->newPassword);
-			$this->salt = \HHash::generateSalt();
-		}
-
 		return parent::beforeSave();
 	}
+
+	/**
+	 * method that called after save.
+	 * if method after@link{$this::getScenario()} is exists 
+
+	 */
+	public function afterSave()
+	{
+		if (parent::afterSave())
+		{
+			if (method_exists($this, $methodName = "after" . ucfirst($this->getScenario())))
+			{
+//				Calling another method.
+				call_user_func_array(array($this, $methodName), array());
+			}
+		}
+	}
+
+	/**
+	 *  method that called on afterSave where scenario is updatePassword
+	 */
+	protected function afterUpdatePassword()
+	{
+//		TODO: update Identity model validationData,salt, and send confirmation email here. 
+	}
+
 }
