@@ -31,7 +31,7 @@ class AdministrationModule extends CWebModule
 		));
 		Yii::app()->configure(array(
 			'theme' => 'administration',
-			'homeUrl'=>array('/administration/dashboard/index'),
+			'homeUrl' => array('/administration/dashboard/index'),
 			'components' => array(
 				'bootstrap' => array(
 					'class' => '\\bootstrap\\Component',
@@ -39,6 +39,21 @@ class AdministrationModule extends CWebModule
 					'responsive' => true,
 					'autoRegisterScript' => false,
 				),
+				//default setting for widget
+				'widgetFactory' => array(
+					'widgets' => array(
+						//default setting for bootstrap gridview widget
+						'\\bootstrap\\widgets\\GridView' => array(
+							'type' => 'table-striped table-bordered bootstrap-datatable datatable dataTable',
+							'summaryCssClass' => 'row-fluid',
+							'summaryText' => sprintf('<div class="span6"><div id="DataTables_Table_0_length" class="dataTables_length"><label>%s</label></div></div>', Yii::t('messages', 'Showing {pageSize} records per page, start from {start} to {end} from total {count} records.', array(
+										'{pageSize}' => CHtml::dropDownList('pageSize', isset($_GET['pageSize']) ? $_GET['pageSize'] : '10', array(10 => 10, 25 => 25, 50 => 50, 100 => 100))
+											)
+									)
+							), //end of summary text
+						), //end of bootstrap\widgets\GridView configuration
+					)
+				)
 			),
 		));
 		//TODO: Check authorization.
