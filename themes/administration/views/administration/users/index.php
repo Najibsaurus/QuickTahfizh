@@ -11,29 +11,48 @@
 			<div class="box-icon">
 				<a class="btn btn-setting btn-round" href="#"><i class="icon-cog"></i></a>
 				<a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
-				<a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a>
 			</div>
 		</div>
 		<div class="box-content">
 			<?php
+			//See AdministrationModule::init() widget factory line to change default settings
 			/* @var $grid \CGridView */
-			$grid = $this->widget('zii.widgets.grid.CGridView', array(
+			$grid = $this->widget('\\bootstrap\\widgets\\GridView', array(
+				'id' => 'user-grid',
+				'filter' => $model,
+				'htmlOptions' => array(
+					'role' => 'grid',
+					'class' => 'grid dataTables_wrapper'
+				),
 				'columns' => array(
-					'id',
-					'username',
-					'fullName',
-					'email',
+					array(
+						'name' => 'id',
+						'htmlOptions' => array('class' => 'sorting_1')
+					),
+					array(
+						'name' => 'username',
+						'htmlOptions' => array('class' => 'center')
+					),
+					array(
+						'name' => 'fullName',
+						'htmlOptions' => array('class' => 'center')
+					),
+					array(
+						'name' => 'email',
+						'htmlOptions' => array('class' => 'center')
+					),
 					array(
 						'name' => 'createdTime',
 						'value' => '$data->createdTime',
 						'type' => 'date',
+						'htmlOptions' => array('class' => 'center')
 					),
+					array(
+						'class' => 'CButtonColumn',
+						'header' => Yii::t('messages', 'Actions'),
+					)
 				),
-				'dataProvider' => $dataProvider,
-				'htmlOptions' => array(
-					'role' => 'grid',
-					'class' => 'grid grid-table-bordered',
-				)
+				'dataProvider' => $model->search(),
 					));
 
 			?>

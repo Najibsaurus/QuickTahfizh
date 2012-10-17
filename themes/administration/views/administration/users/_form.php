@@ -20,11 +20,13 @@ $form = $this->beginWidget('CActiveForm', array(
 	echo $form->labelEx($model, 'username');
 	echo $form->textField($model, 'username');
 	echo $form->error($model, 'username');
+
 	?>
 	<?php
 	echo $form->labelEx($model, 'fullName');
 	echo $form->textField($model, 'fullName');
 	echo $form->error($model, 'fullName');
+
 	?>
 	<?php
 	echo $form->labelEx($model, 'email');
@@ -38,6 +40,7 @@ $form = $this->beginWidget('CActiveForm', array(
 	echo $form->error($model, 'password');
 
 	?>
+
 	<?php
 	echo $form->labelEx($model, 'passwordRepeat');
 	echo $form->passwordField($model, 'passwordRepeat');
@@ -47,7 +50,7 @@ $form = $this->beginWidget('CActiveForm', array(
 </fieldset>
 
 <div class="form-actions">
-	<?php echo CHtml::submitButton('submit', array('class' => 'btn btn-primary')) ?>
+<?php echo CHtml::submitButton('submit', array('class' => 'btn btn-primary')) ?>
 </div>
 
 <?php $this->endWidget(); ?>

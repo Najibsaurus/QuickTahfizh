@@ -15,6 +15,15 @@ use application\models\Identity;
 class UsersController extends \CAdministrationController
 {
 
+	public function filters()
+	{
+		return array_merge(parent::filters(), array(
+					'postOnly +delete',
+					'ajaxOnly +ajaxUpdateProfile +ajaxUpdatePassword'
+						)
+		);
+	}
+
 	/**
 	 * User list display action.
 	 * 
@@ -23,30 +32,99 @@ class UsersController extends \CAdministrationController
 	 */
 	public function actionIndex()
 	{
-		$dataProvider = new \CActiveDataProvider(User::model(), array(
-					'criteria' => array(
-						'scopes' => array(
-							User::SCOPE_SELECT_LABELS,
-							User::SCOPE_ORDER_NEWEST,
-						)
-					),
-					'pagination' => array(
-					),
-				));
+		$model = new User('search');
+
 		$this->render('index', array(
-			'dataProvider' => $dataProvider
+			'model' => $model
 		));
 	}
 
+	/**
+	 * Create new User 
+	 */
 	public function actionCreate()
 	{
 		$model = new User(User::SCENARIO_INSERT_STANDARD_TYPE);
 		if (isset($_POST[get_class($model)]))
 		{
-			$model->setAttributes($_POST[get_class($model)]);
-			if ($model->save())
-				$this->redirect('/administration/users/index');
+			$trans = $model->getDbConnection()->beginTransaction();
+			try
+			{
+				$model->setAttributes($_POST[get_class($model)]);
+				if ($model->save())
+				{
+					$model->setScenario(User::SCENARIO_INSERT_STANDARD_TYPE);
+					$identity = new Identity;
+					$identity->setAttributes(array(
+						'uid' => $model->id,
+						'accid' => 0,
+						'type' => Identity::TYPE_EMAIL_LOGIN,
+						'salt' => \HHash::generateSalt(),
+						'validationData' => \HHash::generatePassword($model->password),
+					));
+					if ($identity->save())
+					{
+						$trans->commit();
+						$this->redirect(array('/administration/users/index'));
+					}
+				}
+			}
+			catch (Exception $e)
+			{
+				echo $e;
+				$trans->rollback();
+			}
 		}
 		$this->render('create', compact('model'));
+	}
+
+	/**
+	 * Update User 
+	 */
+	public function actionUpdate($id)
+	{
+		$model = $this->loadModelById($id);
+		$this->render('update', compact('model'));
+	}
+
+//Ajax action listed here.
+
+	public function actionAjaxUpdateProfile($id)
+	{
+		$model = $this->loadModelById($id);
+		
+	}
+
+	public function actionAjaxUpdatePassword($id)
+	{
+		
+	}
+
+	public function actionDelete($id)
+	{
+		User::model()->updateByPk($id, array(
+			'isRemoved' => 1,
+			'removedTime' => new CDbExpression("NOW()"),
+		));
+		//if request from grid view we shouldnt redirect
+		if (isset($_GET['ajax']) && $_GET['ajax'] === 'user-grid')
+		{
+			return;
+		}
+		$this->redirect(array('/administration/users/index'));
+	}
+
+	/**
+	 *
+	 * @param int $id user Id
+	 * @return User User model
+	 * @throws CHttpException 
+	 */
+	protected function loadModelById($id)
+	{
+		$model = User::model()->findByPk($id);
+		if (!$model)
+			throw new CHttpException(404, Yii::t('messages', 'Page Not Found'));
+		return $model;
 	}
 }
