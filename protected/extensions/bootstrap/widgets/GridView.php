@@ -22,13 +22,17 @@ class GridView extends \CGridView
 
 	public function init()
 	{
-		$this->itemsCssClass = $this->type;
+		$this->itemsCssClass = "table " . $this->type;
 		parent::init();
 	}
-	/**
-	 * Append All Html Options.
-	 * assign htmlOptions,  submenuHtmlOptions to default bootstrap Nav Css HtmlOptions. 
-	 */
+
+	public function registerClientScript()
+	{
+		\Yii::app()->getClientScript()->registerCss("GridView", "
+			.grid tr.filters input {width: 80%;} 
+			.grid tr.filters td{text-align: center;}");
+		parent::registerClientScript();
+	}
 }
 
 ?>
