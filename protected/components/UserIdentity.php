@@ -38,7 +38,7 @@ class UserIdentity extends CUserIdentity
 		{
 			$this->errorCode = self::ERROR_NONE;
 			$this->_id = $user->id;
-			$this->setPersistentStates(array('__fullName' => $user->fullName, '__email' => $user->email));
+			$this->setPersistentStates(array('__fullName' => CHtml::encode($user->fullName), '__email' => CHtml::encode($user->email)));
 			//if the user are removed account and login back set the user isRemoved 0 and give a wellcome back message to him/her.
 			if ($user->isRemoved == 1)
 			{
