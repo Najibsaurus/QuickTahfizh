@@ -1,3 +1,6 @@
 [submodule "yii"]
 	path = yii
 	url = git://github.com/yiisoft/yii.git
+[submodule "protected/components/facebook/vendor"]
+	path = protected/components/facebook/vendor
+	url = https://github.com/facebook/facebook-php-sdk
