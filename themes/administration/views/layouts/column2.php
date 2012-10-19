@@ -15,8 +15,8 @@
 				array('label' => Yii::t('app', 'Main'), 'itemOptions' => array('class' => 'nav-header hidden-tablet')),
 				array('label' => Yii::t('app', 'Dashboard'), 'url' => array('/administration/dashboard/index'), 'icon' => 'home', 'linkOptions' => array('class' => 'ajax-link')),
 				array('label' => Yii::t('app', 'Users'), 'itemOptions' => array('class' => 'nav-header hidden-tablet')),
-				array('label' => Yii::t('app', 'Manage Users'), 'url' => array('/administration/user/index'), 'icon' => 'user', 'linkOptions' => array('class' => 'ajax-link')),
-				array('label' => Yii::t('app', 'Add New'), 'url' => array('/administration/user/create'), 'icon' => 'user', 'linkOptions' => array('class' => 'ajax-link')),
+				array('label' => Yii::t('app', 'Manage Users'), 'url' => array('/administration/users/index'), 'icon' => 'user', 'linkOptions' => array('class' => 'ajax-link')),
+				array('label' => Yii::t('app', 'Add New'), 'url' => array('/administration/users/create'), 'icon' => 'user', 'linkOptions' => array('class' => 'ajax-link')),
 			),
 		));
 		Yii::app()->getClientScript()->registerScript('hidden-tablet', '$("#leftbar li a span").addClass("hidden-tablet")', CClientScript::POS_READY);
