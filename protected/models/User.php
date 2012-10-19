@@ -85,6 +85,8 @@ class User extends \CActiveRecord
 		return array(
 			array('username', 'match', 'pattern' => '/^[a-zA-Z][a-zA-Z0-9_]+$/', 'message' => Yii::t('rules', '{attribute} is invalid. Only alphabet, number, and underscore allowed')),
 			array('username, fullName, email', 'required'),
+			array('username,email', 'unique'),
+			array('email', 'email'),
 			array('password', 'required', 'on' => self::SCENARIO_INSERT_STANDARD_TYPE),
 			array('passwordRepeat', 'safe'),
 			array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_INSERT_STANDARD_TYPE),
@@ -124,7 +126,7 @@ class User extends \CActiveRecord
 			),
 			self::SCOPE_EMAIL_LOGIN => array(
 				'select' => array(
-					"`{$t}`.`id`", "`{$t}`.`username`", "`{$t}`.`fullName`", "`{$t}`.`email`"
+					"`{$t}`.`id`", "`{$t}`.`username`", "`{$t}`.`fullName`", "`{$t}`.`email`", "`{$t}`.`isRemoved`"
 				),
 				'with' => array(
 					array(
@@ -132,7 +134,7 @@ class User extends \CActiveRecord
 							'select' => array(
 								'validationData'
 							),
-							'condition' => 'type=:type',
+							'condition' => "type=:type",
 							'params' => array(':type' => Identity::TYPE_EMAIL_LOGIN)
 						)
 					)
@@ -161,14 +163,21 @@ class User extends \CActiveRecord
 	 */
 	public function search()
 	{
+		$t = $this->getTableAlias();
+		$criteria = new CDbCriteria();
+		$criteria->scopes = array(
+			User::SCOPE_SELECT_LABELS,
+			User::SCOPE_ORDER_NEWEST,
+		);
+		if (trim($this->isRemoved) !== '')
+		{
+			$criteria->condition = "`{$t}`.`isRemoved` = :isRemoved";
+			$criteria->params[':isRemoved'] = $this->isRemoved;
+		}
+
 		return new \CActiveDataProvider($this,
 						array(
-							'criteria' => array(
-								'scopes' => array(
-									User::SCOPE_SELECT_LABELS,
-									User::SCOPE_ORDER_NEWEST,
-								)
-							),
+							'criteria' => $criteria,
 							'pagination' => array(),
 				));
 	}
