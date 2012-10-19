@@ -15,7 +15,7 @@ class UsersController extends \CAdministrationController
 	public function filters()
 	{
 		return array_merge(parent::filters(), array(
-					'postOnly +delete',
+					'postOnly +delete, +restore',
 					'ajaxOnly +ajaxUpdateProfile, +ajaxUpdatePassword'
 						)
 		);
@@ -30,7 +30,10 @@ class UsersController extends \CAdministrationController
 	public function actionIndex()
 	{
 		$model = new User('search');
-
+		if (isset($_GET[get_class($model)]))
+		{
+			$model->setAttributes($_GET[get_class($model)], false);
+		}
 		$this->render('index', array(
 			'model' => $model
 		));
@@ -89,6 +92,7 @@ class UsersController extends \CAdministrationController
 	public function actionAjaxUpdateProfile($id)
 	{
 		$model = $this->loadModelById($id);
+		$lastFullName = Yii::app()->user->fullName;
 		if (isset($_POST[get_class($model)]))
 		{
 			if (isset($_POST['ajax']) && $_POST['ajax'] === 'profile-form')
@@ -99,10 +103,23 @@ class UsersController extends \CAdministrationController
 			$model->setAttributes($_POST[get_class($model)]);
 			if ($model->save())
 			{
-				echo sprintf('<div class="alert alert-success">
+				if (Yii::app()->user->id === $model->id)
+				{
+					//set new fullName to user presistentState for __fullName 
+					\Yii::app()->user->setState('__fullName', $model->fullName);
+					\Yii::app()->user->setState('__email', $model->email);
+				}
+				echo CJSON::encode(
+						array(
+							'success' => true,
+							'message' => sprintf('<div class="alert alert-success">
 				<button type="button" class="close" data-dismiss="alert">×</button>
 				<i class="icon-ok-sign"></i> %s
-					</div>', Yii::t('messages', 'Success, profile updated.'));
+					</div>', Yii::t('messages', 'Success, profile updated.')),
+							'fullName' => \Yii::app()->user->fullName,
+							'lastFullName' => $lastFullName,
+						)
+				);
 				Yii::app()->end();
 			}
 			echo sprintf('<div class="alert alert-error">
@@ -155,11 +172,29 @@ class UsersController extends \CAdministrationController
 		}
 	}
 
+	/**
+	 * Action for delete user. this method not fully delete your user just change isRemoved to 1.
+	 * create cronjob to delete user if user not comeback on 3 month.
+	 * @param string $id
+	 */
 	public function actionDelete($id)
 	{
 		User::model()->updateByPk($id, array(
 			'isRemoved' => 1,
 			'removedTime' => new CDbExpression("NOW()"),
+		));
+		//if request from grid view we shouldnt redirect
+		if (isset($_GET['ajax']) && $_GET['ajax'] === 'user-grid')
+		{
+			return;
+		}
+		$this->redirect(array('/administration/users/index'));
+	}
+
+	public function actionRestore($id)
+	{
+		User::model()->updateByPk($id, array(
+			'isRemoved' => 0,
 		));
 		//if request from grid view we shouldnt redirect
 		if (isset($_GET['ajax']) && $_GET['ajax'] === 'user-grid')
