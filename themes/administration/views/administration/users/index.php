@@ -13,8 +13,8 @@
 				<a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
 			</div>
 			<div class="filterRemovedUser pull-right">
-				<a class="btn" id="removedUser_0" href="javascript:void(0);;"><?php echo Yii::t('messages', 'Active User') ?></a>
-				<a class="btn" id="removedUser_1" href="javascript:void(0);;"><?php echo Yii::t('messages', 'Removed User') ?></a>
+				<a class="btn btn-success" id="removedUser_0" href="javascript:void(0);;"><?php echo Yii::t('messages', 'Active User') ?></a>
+				<a class="btn btn-warning" id="removedUser_1" href="javascript:void(0);;"><?php echo Yii::t('messages', 'Removed User') ?></a>
 				<script type="text/javascript">
 					$(document).on('click.user-grid','.filterRemovedUser a',function(e){
 						var id=$(this).attr('id').replace('removedUser_','');
