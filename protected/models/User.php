@@ -12,7 +12,12 @@
  * @property string $createdTime time when user's record is created.
  * @property string $updatedTime time when user's record is updated.
  * @property boolean $isRemoved whether user's record is flagged as removed.
- * @proeprty string $removedTime time when user's record is flagged as removed.
+ * @property string $removedTime time when user's record is flagged as removed.
+ * @property Identity $loginIdentity login identity for user that login with email / username.
+ * @method User emailLogin using emailLogin scope
+ * @method User selectLabels using selectLabels scope
+ * @method User orderNewest using orderNewest scope
+ * @method User findByAttributes
  * 
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
@@ -24,6 +29,9 @@ class User extends \CActiveRecord
 	 */
 	const SCOPE_SELECT_LABELS = 'selectLabels';
 	const SCOPE_ORDER_NEWEST = 'orderNewest';
+	/**
+	 * @return string 'emailLogin' 
+	 */
 	const SCOPE_EMAIL_LOGIN = 'emailLogin';
 
 
@@ -34,6 +42,9 @@ class User extends \CActiveRecord
 	 * @return string standardInsert
 	 */
 	const SCENARIO_INSERT_STANDARD_TYPE = 'standardInsert';
+	/**
+	 * @return string 'updatePassword' 
+	 */
 	const SCENARIO_UPDATE_PASSWORD = 'updatePassword';
 
 	/** 	
@@ -113,7 +124,7 @@ class User extends \CActiveRecord
 			),
 			self::SCOPE_EMAIL_LOGIN => array(
 				'select' => array(
-					"`{$t}`.`id`", "`{$t}`.`username`", "`{$t}`.`fullname`"
+					"`{$t}`.`id`", "`{$t}`.`username`", "`{$t}`.`fullName`", "`{$t}`.`email`"
 				),
 				'with' => array(
 					array(

@@ -77,7 +77,7 @@ define('ADMIN_THEME_IMAGES', ADMIN_THEME . '/img');
                     ),
                     'items' => array(
                         array(
-                            'label' => Yii::app()->user->name,
+                            'label' => Yii::app()->user->fullName,
                             'url' => 'javascript:void(0);;', 'icon' => 'user',
                             'items' => array(
                                 array('label' => Yii::t('app', 'Profile'), 'url' => array('/users/profile')),
