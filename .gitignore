@@ -12,4 +12,3 @@ protected/data/*.db
 *.*~
 nbproject
 database
-protected/config/application/database.php
