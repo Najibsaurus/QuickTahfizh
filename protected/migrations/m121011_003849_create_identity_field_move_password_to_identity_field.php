@@ -18,7 +18,7 @@ class m121011_003849_create_identity_field_move_password_to_identity_field exten
 				'Primary Key(`uid`,`accid`,`type`)'
 			));
 			$this->dropColumn("Users", 'password');
-			$this->addForeignKey('Identity-userId', 'Identity', 'uid', 'Users', 'id');
+			$this->addForeignKey('Identity-userId', 'Identity', 'uid', 'Users', 'id','CASCADE','CASCADE');
 			$trans->commit();
 		}
 		catch (Exception $e)
