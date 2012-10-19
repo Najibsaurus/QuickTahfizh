@@ -8,13 +8,11 @@
  * @property string $accid account Id. 0 for email/username, facebook account id / twitter account id if use oauth
  * @property integer $type identity type. 0 => email/username, 1=>facebook, 2=>twitter
  * @property string $validationData password or authentication id of oauth connector.
- * @property \application\models\User $user
+ * @property User $user
  * 
  * @author Nurcahyo al Hidayah <2light.hidayah@gmail.com>
  * @package application.models
  */
-namespace application\models;
-use \Yii;
 
 class Identity extends \CActiveRecord
 {
@@ -63,7 +61,7 @@ class Identity extends \CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'user'=>array(self::BELONGS_TO,"\\application\\models\\User",'uid')
+			'user'=>array(self::BELONGS_TO,"User",'uid')
 		);
 	}
 

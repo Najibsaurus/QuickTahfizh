@@ -9,8 +9,6 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package administration.controllers
  */
-use application\models\User;
-use application\models\Identity;
 
 class UsersController extends \CAdministrationController
 {
@@ -19,7 +17,7 @@ class UsersController extends \CAdministrationController
 	{
 		return array_merge(parent::filters(), array(
 					'postOnly +delete',
-					'ajaxOnly +ajaxUpdateProfile +ajaxUpdatePassword'
+					'ajaxOnly +ajaxUpdateProfile, +ajaxUpdatePassword'
 						)
 		);
 	}
@@ -92,7 +90,17 @@ class UsersController extends \CAdministrationController
 	public function actionAjaxUpdateProfile($id)
 	{
 		$model = $this->loadModelById($id);
-		
+		if (isset($_POST[get_class($model)]))
+		{
+			if (isset($_POST['ajax']) && $_POST['ajax'] === 'profile-form')
+			{
+				echo \CActiveForm::validate($model);
+				\Yii::app()->end();
+			}
+			$model->setAttributes($_POST[get_class($model)]);
+			$model->save();
+			
+		}
 	}
 
 	public function actionAjaxUpdatePassword($id)

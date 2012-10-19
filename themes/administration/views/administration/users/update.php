@@ -31,12 +31,22 @@ $lastScenario = $model->getScenario();
 			$form = $this->beginWidget('CActiveForm', array(
 				'action' => array('/administration/users/ajaxUpdateProfile', 'id' => $model->id),
 				'id' => 'profile-form',
+				'enableClientValidation' => false,
 				'enableAjaxValidation' => true,
 				'clientOptions' => array(
 					'validateOnSubmit' => true,
 					'validateOnChange' => false,
 					'afterValidate' => 'js:function(f,r,e){
-						
+						if(!e){
+								$.ajax({
+									url:f.attr("action"),
+									data:f.serialize(),
+									type:\'post\',
+									success:function(response){
+										
+									}
+								});
+						}
 					}'
 				),
 					));
@@ -53,10 +63,10 @@ $lastScenario = $model->getScenario();
 
 			?>
 			<div class="form-actions">
-				<?php echo CHtml::submitButton(Yii::t('messages', 'Update'), array('class' => 'btn btn-primary')); ?>
+				<?php echo CHtml::submitButton(Yii::t('messages', 'Update'), array('class' => 'btn btn-primary', 'id' => 'update-btn', 'name' => 'update-btn')); ?>
 			</div>
 			<?php
-			$this->endWidget('CActiveForm');
+			$this->endWidget();
 
 			?>
 		</div> <!--	end update profile form-->
@@ -71,14 +81,23 @@ $lastScenario = $model->getScenario();
 			<?php
 			/* @var $form CActiveForm */
 			$form = $this->beginWidget('CActiveForm', array(
-				'action' => array('/administration/users/ajaxUpdatePassword'),
-				'id' => 'password-form'
+				'action' => array('/administration/users/ajaxUpdatePassword', 'id' => $model->id),
+				'id' => 'password-form',
+				'enableClientValidation' => true,
+				'enableAjaxValidation' => true,
+				'clientOptions' => array(
+					'validateOnSubmit' => true,
+					'validateOnChange' => false,
+					'afterValidate' => 'js:function(f,r,e){
+						
+					}'
+				),
 					));
 
 			?>
 			<?php
 			//set update password scenario
-			$model->setScenario(\application\models\User::SCENARIO_UPDATE_PASSWORD);
+			$model->setScenario(User::SCENARIO_UPDATE_PASSWORD);
 			echo $form->labelEx($model, 'oldPassword');
 			echo $form->passwordField($model, 'oldPassword');
 			echo $form->error($model, 'oldPassword');
@@ -91,7 +110,7 @@ $lastScenario = $model->getScenario();
 
 			?>
 			<div class="form-actions">
-				<?php echo CHtml::submitButton(Yii::t('messages', 'Update'), array('class' => 'btn btn-primary')); ?>
+				<?php echo CHtml::submitButton(Yii::t('messages', 'Update'), array('class' => 'btn btn-primary', 'id' => 'password-btn')); ?>
 			</div>
 			<?php
 			$this->endWidget('CActiveForm');

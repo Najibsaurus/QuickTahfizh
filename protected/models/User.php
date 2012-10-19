@@ -17,12 +17,6 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
  */
-
-namespace application\models;
-
-use \Yii;
-use application\models\Identity;
-
 class User extends \CActiveRecord
 {
 	/**
@@ -53,7 +47,7 @@ class User extends \CActiveRecord
 	 * @var string confirmation password for Identity 
 	 */
 	public $passwordRepeat;
-	
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -95,8 +89,8 @@ class User extends \CActiveRecord
 	public function relations()
 	{
 		return array(
-			'identity' => array(self::HAS_MANY, '\\application\\models\\Identity', 'uid'),
-			'loginIdentity' => array(self::HAS_ONE, '\\application\\models\\Identity', 'uid', 'condition' => sprintf('type= %s ', Identity::TYPE_EMAIL_LOGIN)),
+			'identity' => array(self::HAS_MANY, 'Identity', 'uid'),
+			'loginIdentity' => array(self::HAS_ONE, 'Identity', 'uid', 'condition' => sprintf('type= %s ', Identity::TYPE_EMAIL_LOGIN)),
 		);
 	}
 
@@ -212,5 +206,4 @@ class User extends \CActiveRecord
 	{
 //		TODO: update Identity model validationData,salt, and send confirmation email here. 
 	}
-
 }
