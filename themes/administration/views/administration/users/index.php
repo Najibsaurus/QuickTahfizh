@@ -1,6 +1,6 @@
 <?php
 /* @var $this UsersController */
-/* @var $dataProvider \CActiveDataProvider */
+/* @var $model \User */
 
 ?>
 
@@ -11,6 +11,33 @@
 			<div class="box-icon">
 				<a class="btn btn-setting btn-round" href="#"><i class="icon-cog"></i></a>
 				<a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
+			</div>
+			<div class="filterRemovedUser pull-right">
+				<a class="btn btn-success" id="removedUser_0" href="javascript:void(0);;"><?php echo Yii::t('messages', 'Active User') ?></a>
+				<a class="btn btn-warning" id="removedUser_1" href="javascript:void(0);;"><?php echo Yii::t('messages', 'Removed User') ?></a>
+				<script type="text/javascript">
+					$(document).on('click.user-grid','.filterRemovedUser a',function(e){
+						var id=$(this).attr('id').replace('removedUser_','');
+						var label="<?php echo CHtml::activeName($model, 'isRemoved') ?>";
+						$.fn.yiiGridView.update('user-grid',{
+							url:$.fn.yiiGridView.getUrl('user-grid') ,
+							data:$("#user-grid input").serialize()+"&"+label+"="+id
+						});
+					});
+					$(document).on('click.user-grid','#user-grid a.restore',function(e){
+						if(!confirm('Are you sure you want to restore this user?')) return false;
+						$.ajax({
+							url:$(this).attr('href')+"?ajax=user-grid",
+							type:'post',
+							data:{ <?php echo Yii::app()->request->csrfTokenName ?> : "<?php echo Yii::app()->request->csrfToken ?>"},
+							success:function(){
+								$.fn.yiiGridView.update('user-grid');
+							}
+						})
+						e.preventDefault();
+					});
+
+				</script>
 			</div>
 		</div>
 		<div class="box-content">
@@ -50,6 +77,17 @@
 					array(
 						'class' => 'CButtonColumn',
 						'header' => Yii::t('messages', 'Actions'),
+						'template' => !$model->isRemoved ? "{view}\n{update}\n{delete}" : "{view}\n{update}\n{restore}",
+						'deleteConfirmation' => Yii::t('messages', 'Are you sure you want to delete this user?'),
+						'buttons' => array(
+							'restore' => array(
+								'label' => Yii::t('messages', 'Restore'),
+								'url' => "array('restore','id'=>\$data->id)",
+								'options' => array(
+									'class' => 'restore'
+								)
+							)
+						)
 					)
 				),
 				'dataProvider' => $model->search(),

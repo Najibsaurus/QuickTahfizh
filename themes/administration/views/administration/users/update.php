@@ -1,7 +1,9 @@
 <?php
 /* @var $this UsersController */
 /* @var $model \application\models\User */
-
+/**
+ * TODO: Ajax Queue management on Ajax Request 
+ */
 Yii::app()->clientScript->registerScript('box-header well on Click', <<<JS
 		$('.box-header.well').on('click.boxheader',function(e){
 	e.preventDefault();
@@ -42,9 +44,10 @@ $lastScenario = $model->getScenario();
 									url:f.attr("action"),
 									data:f.serialize(),
 									type:\'post\',
+									dataType:\'json\',
 									success:function(response){
-										var summary=f.children(\'.summary\');
-										$(summary).html(response);
+										f.children(\'.summary\').html(response.message);
+										$(\'.fullName\').html($(\'.fullName\').html().replace(response.lastFullName,response.fullName));
 									}
 								});
 						}
@@ -97,8 +100,7 @@ $lastScenario = $model->getScenario();
 									data:f.serialize(),
 									type:\'post\',
 									success:function(response){
-										var summary=f.children(\'.summary\');
-										$(summary).html(response);
+										f.children(\'.summary\').html(response.message);
 									}
 								});
 						}
