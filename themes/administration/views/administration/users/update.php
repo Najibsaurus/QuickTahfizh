@@ -43,7 +43,8 @@ $lastScenario = $model->getScenario();
 									data:f.serialize(),
 									type:\'post\',
 									success:function(response){
-										
+										var summary=f.children(\'.summary\');
+										$(summary).html(response);
 									}
 								});
 						}
@@ -52,6 +53,7 @@ $lastScenario = $model->getScenario();
 					));
 
 			?>
+			<div class="summary"></div>
 			<?php
 			//set model scenario to update
 			echo $form->labelEx($model, 'fullName');
@@ -83,18 +85,30 @@ $lastScenario = $model->getScenario();
 			$form = $this->beginWidget('CActiveForm', array(
 				'action' => array('/administration/users/ajaxUpdatePassword', 'id' => $model->id),
 				'id' => 'password-form',
-				'enableClientValidation' => true,
+				'enableClientValidation' => false,
 				'enableAjaxValidation' => true,
 				'clientOptions' => array(
 					'validateOnSubmit' => true,
 					'validateOnChange' => false,
 					'afterValidate' => 'js:function(f,r,e){
-						
+						if(!e){
+								$.ajax({
+									url:f.attr("action"),
+									data:f.serialize(),
+									type:\'post\',
+									success:function(response){
+										var summary=f.children(\'.summary\');
+										$(summary).html(response);
+									}
+								});
+						}
 					}'
 				),
 					));
 
 			?>
+			<div class="summary"></div>
+
 			<?php
 			//set update password scenario
 			$model->setScenario(User::SCENARIO_UPDATE_PASSWORD);

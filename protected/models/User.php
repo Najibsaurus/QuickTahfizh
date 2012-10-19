@@ -75,9 +75,11 @@ class User extends \CActiveRecord
 			array('username', 'match', 'pattern' => '/^[a-zA-Z][a-zA-Z0-9_]+$/', 'message' => Yii::t('rules', '{attribute} is invalid. Only alphabet, number, and underscore allowed')),
 			array('username, fullName, email', 'required'),
 			array('password', 'required', 'on' => self::SCENARIO_INSERT_STANDARD_TYPE),
-			array('passwordRepeat', 'safe', 'on' => self::SCENARIO_INSERT_STANDARD_TYPE),
+			array('passwordRepeat', 'safe'),
 			array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_INSERT_STANDARD_TYPE),
+			array('newPassword,oldPassword', 'required', 'on' => self::SCENARIO_UPDATE_PASSWORD),
 			array('newPassword', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_UPDATE_PASSWORD),
+			array('oldPassword', 'compare', 'compareAttribute' => 'password', 'on' => self::SCENARIO_UPDATE_PASSWORD, 'message' => Yii::t('rules', 'Type your {attribute} correctly.')),
 			array('username', 'length', 'max' => 64, 'min' => 5),
 			array('email', 'email'),
 		);

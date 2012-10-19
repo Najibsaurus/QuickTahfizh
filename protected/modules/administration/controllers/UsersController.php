@@ -9,7 +9,6 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package administration.controllers
  */
-
 class UsersController extends \CAdministrationController
 {
 
@@ -98,14 +97,62 @@ class UsersController extends \CAdministrationController
 				\Yii::app()->end();
 			}
 			$model->setAttributes($_POST[get_class($model)]);
-			$model->save();
-			
+			if ($model->save())
+			{
+				echo sprintf('<div class="alert alert-success">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<i class="icon-ok-sign"></i> %s
+					</div>', Yii::t('messages', 'Success, profile updated.'));
+				Yii::app()->end();
+			}
+			echo sprintf('<div class="alert alert-error">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<i class="icon-info-sign"></i> %s
+					</div>', Yii::t('messages', 'Error, there are something error in connection or in your account. Try again later, or request a ticket.'));
+			Yii::app()->end();
 		}
 	}
 
 	public function actionAjaxUpdatePassword($id)
 	{
-		
+		$model = $this->loadModelById($id);
+		$model->setScenario(User::SCENARIO_UPDATE_PASSWORD);
+		$model->password = $model->loginIdentity->validationData;
+		if (isset($_POST[get_class($model)]))
+		{
+			if (isset($_POST[get_class($model)]))
+			{
+				$typedOldPassword = $_POST[get_class($model)]['oldPassword'];
+				$_POST[get_class($model)]['oldPassword'] = \HHash::hash($typedOldPassword, $model->loginIdentity->salt);
+
+				if (isset($_POST['ajax']) && $_POST['ajax'] === 'password-form')
+				{
+					echo \CActiveForm::validate($model);
+					\Yii::app()->end();
+				}
+				$model->setAttributes($_POST[get_class($model)]);
+				if ($model->save())
+				{
+					$model->loginIdentity->setAttributes(array(
+						'salt' => \HHash::generateSalt(),
+						'validationData' => \HHash::generatePassword($model->newPassword),
+					));
+					if ($model->loginIdentity->save())
+					{
+						echo sprintf('<div class="alert alert-success">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<i class="icon-ok-sign"></i> %s
+					</div>', Yii::t('messages', 'Success, password updated.'));
+						Yii::app()->end();
+					}
+				}
+				echo sprintf('<div class="alert alert-error">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<i class="icon-info-sign"></i> %s
+					</div>', Yii::t('messages', 'Error, there are something error in connection or in your account. Try again later, or request a ticket.'));
+				Yii::app()->end();
+			}
+		}
 	}
 
 	public function actionDelete($id)
