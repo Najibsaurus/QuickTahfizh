@@ -12,7 +12,8 @@ return array(
 	// preloading 'log' component
 	'preload' => array('log'),
 	'aliases' => array(
-		'bootstrap' => 'ext.bootstrap'
+		'bootstrap' => 'ext.bootstrap',
+		'facebook' => 'application.components.facebook',
 	),
 	// autoloading model and component classes
 	'import' => array(
@@ -29,12 +30,21 @@ return array(
 			'ipFilters' => array('127.0.0.1', '::1'),
 		),
 	),
+	'theme' => 'default',
 	// application components
 	'components' => array(
 		'db' => require(APP_CONFIG_DIR . '/database.php'),
+		'facebook' => array(
+			'class' => 'facebook\\Component',
+			'appId' => '289024961198744',
+			'appSecret' => 'acacc53dfcf340408fdc54b9bc206ad8',
+			'scope' => 'email',
+			'registerUrl' => array('/site/register')
+		),
 		'bootstrap' => array(
 			'class' => '\\bootstrap\\Component',
 			'useLess' => true, //on theming development mode useLess set true
+			'autoRegisterScript' => true,
 		),
 		// uncomment the following to use a MySQL database
 		'errorHandler' => array(
@@ -67,7 +77,7 @@ return array(
 		// uncomment the following to enable URLs in path-format
 		'urlManager' => array(
 			'urlFormat' => 'path',
-			'showScriptName'=>false,
+			'showScriptName' => false,
 			'rules' => array(
 				'<controller:\w+>/<id:\d+>' => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',

@@ -13,6 +13,7 @@
  */
 class WebUser extends CWebUser
 {
+	public $onBeforeLogoutArrays = array();
 
 	/**
 	 *
@@ -30,6 +31,16 @@ class WebUser extends CWebUser
 	public function getEmail()
 	{
 		return $this->getState('__email');
+	}
+
+	public function beforeLogout() {
+
+		if (count($this->onBeforeLogoutArrays) > 0) {
+			foreach ($this->onBeforeLogoutArrays as $closure) {
+				$closure();
+			}
+		}
+		return parent::beforeLogout();
 	}
 }
 

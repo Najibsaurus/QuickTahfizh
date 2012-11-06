@@ -17,6 +17,7 @@
 class Identity extends \CActiveRecord
 {
 	const TYPE_EMAIL_LOGIN=0;
+	const TYPE_FACEBOOK_LOGIN=1;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -43,10 +44,11 @@ class Identity extends \CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('uid, type, validationData, salt', 'required'),
+			array('uid, type, validationData', 'required'),
 			array('type', 'numerical', 'integerOnly'=>true),
+			array('salt','safe'),
 			array('uid, accid', 'length', 'max'=>20),
-			array('validationData', 'length', 'max'=>40),
+			array('validationData', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('uid, accid, type, validationData', 'safe', 'on'=>'search'),
