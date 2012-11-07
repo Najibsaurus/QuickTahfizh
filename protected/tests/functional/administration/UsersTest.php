@@ -14,7 +14,7 @@ class UsersTest extends WebTestCase
 	 */
 	public function testIndex()
 	{
-		$this->open('/QuickTahfizh/administration/users');
+		$this->open('/administration/users');
 
 		$users = User::model()->findAll();
 		foreach ($users as $user)
