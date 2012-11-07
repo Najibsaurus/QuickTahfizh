@@ -4,15 +4,16 @@
  * WebUser class file.
  *
  * @author Nurcahyo al hidayah <2light.hidayah@gmail.com>
- * @link http://oneaccess.co.id/
- * @copyright Copyright &copy; 2012-2012 One Access Interactive
- * @license http://oneaccess.co.id/license
+ * @link http://phpindonesia.net/
+ * @copyright Copyright &copy; 2012-2012 PHP ID Jawa Barat
+ * @license http://phpindonesia.net/license
  * @version $Id$
  * @package system
  * @since 1.0
  */
 class WebUser extends CWebUser
 {
+	public $onBeforeLogoutArrays = array();
 
 	/**
 	 *
@@ -30,6 +31,16 @@ class WebUser extends CWebUser
 	public function getEmail()
 	{
 		return $this->getState('__email');
+	}
+
+	public function beforeLogout() {
+
+		if (count($this->onBeforeLogoutArrays) > 0) {
+			foreach ($this->onBeforeLogoutArrays as $closure) {
+				$closure();
+			}
+		}
+		return parent::beforeLogout();
 	}
 }
 

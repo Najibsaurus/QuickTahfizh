@@ -22,7 +22,7 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
  */
-class User extends \CActiveRecord
+class User extends CActiveRecord
 {
 	/**
 	 * List of constants for scopes.
