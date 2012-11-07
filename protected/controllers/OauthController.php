@@ -4,11 +4,11 @@
  * OauthController class file.
  *
  * @author Nurcahyo al hidayah <2light.hidayah@gmail.com>
- * @link http://oneaccess.co.id/
- * @copyright Copyright &copy; 2012-2012 One Access Interactive
- * @license http://oneaccess.co.id/license
+ * @link http://phpindonesia.net/
+ * @copyright Copyright &copy; 2012-2012 PHP ID Jawa Barat
+ * @license http://phpindonesia.net/license
  * @version $Id$
- * @package system
+ * @package Frontend
  * @since 1.0
  */
 class OauthController extends CController {
@@ -19,7 +19,6 @@ class OauthController extends CController {
 	 * If user has connected this popup will closed and try to login through {@see \facebook\UserIdentity::login()} Component
 	 */
 	public function actionFacebook() {
-		Yii::app()->getRequest()->urlReferrer;
 
 		$redirectUrl = Yii::app()->user->returnUrl;
 		if (Yii::app()->facebook->user === 0 && !isset($_GET['error'])) {
@@ -28,7 +27,7 @@ class OauthController extends CController {
 		else if (!isset($_GET['error'])) {
 			//if cant login forward to register url 
 			if (!Yii::app()->facebook->login()) {
-				$redirectUrl = $this->createAbsoluteUrl(Yii::app()->facebook->registerUrl);
+				$redirectUrl = $this->createAbsoluteUrl(Yii::app()->facebook->registerUrl, array('via' => 'fb'));
 			}
 			echo "<head>";
 			echo "<script type='text/javascript'>

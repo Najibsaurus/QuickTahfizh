@@ -13,7 +13,7 @@ $this->breadcrumbs = array(
 <h3><?php echo Yii::t('message', 'Login to your {name} account', array('{name}' => Yii::app()->name)) ?>
 	<br/>
 	<small>
-		<?php echo Yii::t('message', "Don't have Account yet? {learn more} about {name} or {sign up}.", array('{learn more}' => CHtml::link(Yii::t('message', 'Learn more')), '{name}' => Yii::app()->name, '{sign up}' => CHtml::link(Yii::t('message', 'Sign Up')))) ?>
+		<?php echo Yii::t('message', "Don't have Account yet? {learn more} about {name} or {sign up}.", array('{learn more}' => CHtml::link(Yii::t('message', 'Learn more')), '{name}' => Yii::app()->name, '{sign up}' => CHtml::link(Yii::t('message', 'Sign Up'),array('/user/register')))) ?>
 	</small>
 </h3>
 <div class="summary">

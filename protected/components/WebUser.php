@@ -4,9 +4,9 @@
  * WebUser class file.
  *
  * @author Nurcahyo al hidayah <2light.hidayah@gmail.com>
- * @link http://oneaccess.co.id/
- * @copyright Copyright &copy; 2012-2012 One Access Interactive
- * @license http://oneaccess.co.id/license
+ * @link http://phpindonesia.net/
+ * @copyright Copyright &copy; 2012-2012 PHP ID Jawa Barat
+ * @license http://phpindonesia.net/license
  * @version $Id$
  * @package system
  * @since 1.0

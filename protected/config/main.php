@@ -39,7 +39,7 @@ return array(
 			'appId' => '289024961198744',
 			'appSecret' => 'acacc53dfcf340408fdc54b9bc206ad8',
 			'scope' => 'email',
-			'registerUrl' => array('/site/register')
+			'registerUrl' => array('/user/register')
 		),
 		'bootstrap' => array(
 			'class' => '\\bootstrap\\Component',
