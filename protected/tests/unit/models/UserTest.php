@@ -9,13 +9,13 @@
  * @package application.tests.unit.models
  */
 
-class UserTest extends \CDbTestCase
+class UserTest extends CDbTestCase
 {
     /**
      * @var array fixtures
      */
     public $fixtures = array(
-        'users' => 'User',
+        'user' => 'User',
     );
 
     /**
